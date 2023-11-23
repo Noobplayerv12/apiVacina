@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,9 +66,21 @@ public class VacinaService {
             erros.add("Intervalo entre doses deve ser um valor positivo.");
         }
 
-        LocalDate dataAtual = LocalDate.now();
-        if (vacina.getDataDeValidade() != null && vacina.getDataDeValidade().isBefore(dataAtual)) {
-            erros.add("A data de validade não pode estar no passado.");
+        if (vacina.getDataDeValidade() != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            try {
+                // Tentar fazer o parse da data
+                formatter.format(vacina.getDataDeValidade());
+            } catch (DateTimeParseException e) {
+                erros.add("Formato de data inválido. Use o formato yyyy-MM-dd.");
+            }
+
+            if (vacina.getDataDeValidade().isBefore(LocalDate.now())) {
+                erros.add("A data de validade não pode estar no passado.");
+            }
+        } else {
+            erros.add("A data de validade deve ser inserida.");
         }
 
         return erros;
