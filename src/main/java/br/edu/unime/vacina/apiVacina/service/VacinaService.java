@@ -15,10 +15,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class VacinaService {
@@ -51,18 +48,18 @@ public class VacinaService {
         mongoTemplate.insert(log, "log");
     }
 
-    public List<String> validarVacina(Vacina vacina) {
+    public List<String> validarVacina(Vacina vacina, String metodo) {
         List<String> erros = new ArrayList<>();
 
-        if (vacinaRepository.existsByFabricanteAndLote(vacina.getFabricante(), vacina.getLote())) {
+        if (Objects.equals(metodo, "POST") && vacinaRepository.existsByFabricanteAndLote(vacina.getFabricante(), vacina.getLote())) {
             erros.add("Já existe uma vacina cadastrada com esses dados.");
         }
 
-        if (vacina.getNumeroDeDoses() <= 0) {
+        if (vacina.getNumeroDeDoses() != null && vacina.getNumeroDeDoses() <= 0) {
             erros.add("Número de doses deve ser um valor positivo.");
         }
 
-        if (vacina.getIntervaloDeDoses() <= 0) {
+        if (vacina.getIntervaloDeDoses() != null && vacina.getIntervaloDeDoses() <= 0) {
             erros.add("Intervalo entre doses deve ser um valor positivo.");
         }
 

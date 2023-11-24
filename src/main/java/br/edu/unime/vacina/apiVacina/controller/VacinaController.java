@@ -55,7 +55,7 @@ public class VacinaController {
             return handleValidationErrors(bindingResult, "POST", "Erro ao adicionar Vacina", vacina);
         }
 
-        List<String> erros = vacinaService.validarVacina(vacina);
+        List<String> erros = vacinaService.validarVacina(vacina, "POST");
 
         if (!erros.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
@@ -75,7 +75,7 @@ public class VacinaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> atualizar(@PathVariable String id, @RequestBody @NotNull Vacina vacina) {
-        List<String> erros = vacinaService.validarVacina(vacina);
+        List<String> erros = vacinaService.validarVacina(vacina, "PUT");
 
         if (!erros.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erros);
